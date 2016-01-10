@@ -1,6 +1,23 @@
 # Open Data Brussels
 
-For the moment, this will just tell which bikes are available and where
+ODB is a very easy to use script. (for the moment) It will do the following:
+
+* Tell you how many bikes are at each Villo!-station, how many stands are open and how many bikes are available
+
+* Which parkings there are in Brussels and how many spots they have in total (so not available)
+
+## How to install ODB
+
+Just do the following:
+```
+git clone https://github.com/xPhentom/ODB.git
+cd ODB
+python ODB.py
+```
+
+## Source
+
+[Open Data Brussels](https://bruxellesdata.opendatasoft.com/page/home/)
 
 ## License
 
