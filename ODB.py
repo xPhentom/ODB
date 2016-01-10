@@ -4,8 +4,10 @@ import urllib2
 import json
 import os
 import sys
+from array import array
 
 def readVilloStations(): 
+
     url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=villo-stations-beschikbaarheid-in-real-time&lang=nl&facet=banking&facet=bonus&facet=status&facet=contract_name" #Sets url
 
     response = urllib2.urlopen(url) #Reads data from url
@@ -50,10 +52,35 @@ def readVilloStations():
 ########END readVilloStations function##########
 
 
-def choices(): #TODO: make an array to make this easier
-    print "\n - Villo"
+def readPublicParking():
+    url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=public-parkings&lang=en"
+
+    response = urllib2.urlopen(url) #Reads data from url
+    data = json.loads(response.read())#Set info as json file
+
+    x = 0
+
+    for data["datasetid"] in data["records"]:
+        try: #Because someone decided     to make a public parking WITHOUT parking spots, sounds silly, doesn't it?
+            parking = data["records"][x]["fields"]["nombre_de_places"]
+            parking_name = data["records"][x]["fields"]["description"]
+            print "\nThere are %s parking spots in %s\n" % (parking, parking_name)
+        except:
+            pass     
+   
+	x = x + 1            
+
+ ########END readPublicParking function##########
 
 
+########MAIN#########
+
+options = ["Villo", "Parking (address + how many places there are in total)"]
+
+def choices(): 
+    for i in range (0, len(options)):
+        print "\n - %s" % options[i]
+         
 ###Here starts the program
 
 
@@ -70,6 +97,8 @@ ans = ans.lower()
 
 if ans == "villo":
     readVilloStations()
+elif ans == "parking":
+    readPublicParking()
 else:
     print "The number you've chosen isn't in the list"
     sys.exit()
