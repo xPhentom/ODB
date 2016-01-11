@@ -1,10 +1,10 @@
 #!bin/python
-
-import urllib2
-import json
-import os
-import sys
-from array import array
+	       #WHY I IMPORT THIS STUFF
+import urllib2 #To get file from the interwebz
+import json #Read data as json
+import os #Clear the screen before displaying data
+import sys #Exiting the script
+from array import array #Making an array of options
 
 def readVilloStations(): 
 
@@ -72,15 +72,26 @@ def readPublicParking():
 
  ########END readPublicParking function##########
 
+def readATM():
+    url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=atms&lang=en"
+    response = urllib2.urlopen(url)
+    data = json.loads(response.read())
 
+    x = 0
+    
+    for data["datasetid"] in data["records"]:
+        description = data["records"][x]["fields"]["description"]
+        print "\nThere is an ATM at %s\n" % description
+
+        x = x + 1
 ########MAIN#########
 
-options = ["Villo", "Parking (address + how many places there are in total)"]
+options = ["Villo", "Parking (address + how many places there are in total)", "ATM"]
 
 def choices(): 
     for i in range (0, len(options)):
         print "\n - %s" % options[i]
-         
+        
 ###Here starts the program
 
 
@@ -99,6 +110,8 @@ if ans == "villo":
     readVilloStations()
 elif ans == "parking":
     readPublicParking()
+elif ans == "atm":
+    readATM()
 else:
     print "The number you've chosen isn't in the list"
     sys.exit()
