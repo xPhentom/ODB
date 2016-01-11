@@ -6,6 +6,8 @@ ODB is a very easy to use script. (for the moment) It will do the following:
 
 * Which parkings there are in Brussels and how many spots they have in total (so not available)
 
+* Places where you can find ATMs
+
 ## How to install ODB
 
 Just do the following:
