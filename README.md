@@ -1,5 +1,7 @@
 # Open Data Brussels
 
+This script is made to let me learn more about Python, since I haven't learned it yet. In this I learned how to work with functions, json, urllib2 and other basic stuff.
+
 ODB is a very easy to use script. (for the moment) It will do the following:
 
 * Tell you how many bikes are at each Villo!-station, how many stands are open and how many bikes are available
