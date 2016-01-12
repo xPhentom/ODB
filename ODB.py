@@ -1,102 +1,73 @@
-#!bin/python
-	       #WHY I IMPORT THIS STUFF
-import urllib2 #To get file from the interwebz
-import json #Read data as json
-import os #Clear the screen before displaying data
-import sys #Exiting the script
-from array import array #Making an array of options
+#!/bin/python
 
-def readVilloStations(): 
+import urllib2
+import json
+import os
+import sys
+from array import array
 
-    url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=villo-stations-beschikbaarheid-in-real-time&lang=nl&facet=banking&facet=bonus&facet=status&facet=contract_name" #Sets url
-
-    response = urllib2.urlopen(url) #Reads data from url
-    data = json.loads(response.read())#Set info as json file
-
-    x = 0 #Counter for going through all the data
-
-    for data["datasetid"] in data["records"]:#For each data in json file
-
-	number = data["records"][x]["fields"]["number"]
-        name = data["records"][x]["fields"]["name"][6:]
-        contract_name = data["records"][x]["fields"]["contract_name"]
-        status = data ["records"][x]["fields"]["status"]
-
-        print "\n%s.	%s in %s is %s" % (number, name, contract_name, status) #Display basic info of the stations
-	
-        x = x + 1 #Add to counter called x
-
-    print "\n Choose a number to get more info about the station:\n"
-    answer =  raw_input(">>>	") #User can now choose a specific station to get more info from it
-        
-    counter = 0 #Make second counter so that you can get the chosen number      
- 
-    for data["datasetid"] in data["records"]: #Go through al the data
-         
-        number = data["records"][counter]["fields"]["number"] 
-
-	if float(answer) == float(number): #Take the chosen date, given by the answer of the user
-            name = data["records"][counter]["fields"]["name"][6:]
-            contract_name = data["records"][counter]["fields"]["contract_name"]
-            status = data ["records"][counter]["fields"]["status"]
-	    bike_stands = data ["records"][counter]["fields"]["bike_stands"]
-            available_stands = data ["records"][counter]["fields"]["available_bike_stands"]
-	    available_bikes = data ["records"][counter]["fields"]["available_bikes"]
-        
-
-	counter = counter + 1
+def readVillo(number):
     
+    stationNumber = data["records"][number]["fields"]["number"]
+    stationName = data["records"][number]["fields"]["name"][6:]
+    stationContract = data["records"][number]["fields"]["contract_name"]
+    stationStatus = data["records"][number]["fields"]["status"]
 
-    print "\n %s in %s is %s\n\n There are currently %s out of %s bikestands available.\n\n %s bikes are still available\n\n" % (name, contract_name, status, available_stands, bike_stands, available_bikes)
+    print "\n%s.    %s in %s is %s" % (stationNumber, stationName, stationContract, stationStatus)
+    
+def readParking(number):
+    try:
+        parking = data["records"][number]["fields"]["nombre_de_places"]
+        parking_name = data["records"][number]["fields"]["description"]
+        print "\n There are %s parking spots in %s\n" % (parking, parking_name)
+    except:
+        pass    
 
-########END readVilloStations function##########
+def readATM(number):
+    description = data["records"][number]["fields"]["description"]
+    print "\n There is an ATM at %s\n" % description
 
+def readInfo(answer):
 
-def readPublicParking():
-    url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=public-parkings&lang=en"
+    if answer == "villo":
+        url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=villo-stations-beschikbaarheid-in-real-time&lang=nl&facet=banking&facet=bonus&facet=status&facet=contract_name"
+    elif answer == "parking":
+        url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=public-parkings&lang=en"
+    elif answer =="atm":
+        url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=atms&lang=en"
 
-    response = urllib2.urlopen(url) #Reads data from url
-    data = json.loads(response.read())#Set info as json file
-
-    x = 0
-
-    for data["datasetid"] in data["records"]:
-        try: #Because someone decided     to make a public parking WITHOUT parking spots, sounds silly, doesn't it?
-            parking = data["records"][x]["fields"]["nombre_de_places"]
-            parking_name = data["records"][x]["fields"]["description"]
-            print "\nThere are %s parking spots in %s\n" % (parking, parking_name)
-        except:
-            pass     
-   
-	x = x + 1            
-
- ########END readPublicParking function##########
-
-def readATM():
-    url = "https://bruxellesdata.opendatasoft.com/api/records/1.0/search/?dataset=atms&lang=en"
     response = urllib2.urlopen(url)
+    
+    global data
+
     data = json.loads(response.read())
 
     x = 0
-    
+
     for data["datasetid"] in data["records"]:
-        description = data["records"][x]["fields"]["description"]
-        print "\nThere is an ATM at %s\n" % description
+        if answer == "villo":
+            readVillo(x)
+        elif answer == "parking":
+            readParking(x)
+        elif answer == "atm":
+            readATM(x)
+        else:
+            print "The number you've chosen isn't in the list"
+            sys.exit()
 
-        x = x + 1
-########MAIN#########
+        x = x + 1 
 
-options = ["Villo", "Parking (address + how many places there are in total)", "ATM"]
+################# End readInfo
 
-def choices(): 
+options = ["Villo", "Parking", "ATM"]
+
+def choices():
     for i in range (0, len(options)):
-        print "\n - %s" % options[i]
-        
-###Here starts the program
-
+        print"\n - %s" % options[i]
 
 os.system('clear')
-print "\n Hi \n Welcome to ODB, the Open Data reader for Brussels.\n For the moment, you can choose between: "
+
+print "\n Hi \n Welcome to ODB, the Open Data reader for Brussels. \n For the Moment, you can choose between: "
 
 choices()
 
@@ -106,12 +77,4 @@ ans = raw_input(">>>   ")
 
 ans = ans.lower()
 
-if ans == "villo":
-    readVilloStations()
-elif ans == "parking":
-    readPublicParking()
-elif ans == "atm":
-    readATM()
-else:
-    print "The number you've chosen isn't in the list"
-    sys.exit()
+readInfo(ans)
